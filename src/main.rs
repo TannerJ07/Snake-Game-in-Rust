@@ -89,7 +89,7 @@ fn main() {
         .add_event::<GrowthEvent>()
         .add_event::<GameOverEvent>()
         .add_systems(Startup, (setup_camera, spawn_snake))
-        .add_systems(Update, snake_movement_input.before(snake_movement))
+        .add_systems(Update, snake_movement_input)
         .add_systems(FixedUpdate, (snake_movement, game_over, snake_eating, snake_growth).chain().run_if(on_timer(Duration::from_secs_f32(0.15*TIME_MULT))))
         .add_systems(FixedUpdate, food_spawner.run_if(on_timer(Duration::from_secs_f32(1.*TIME_MULT))))
         .add_systems(PostUpdate,(position_translation, size_scaling).chain())
@@ -205,8 +205,8 @@ fn position_translation(windows: Query<&Window>, mut q: Query<(&Position, &mut T
     let Ok(window) = windows.get_single() else {return};
     for (pos, mut transform) in q.iter_mut() {
         transform.translation = Vec3::new(
-            convert(pos.x as f32, window.width() as f32, ARENA_WIDTH as f32),
-            convert(pos.y as f32, window.height() as f32, ARENA_HEIGHT as f32),
+            convert(pos.x as f32, window.width(), ARENA_WIDTH as f32),
+            convert(pos.y as f32, window.height(), ARENA_HEIGHT as f32),
             0.0,
         )
     }
